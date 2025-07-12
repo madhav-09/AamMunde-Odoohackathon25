@@ -22,7 +22,7 @@ const Navbar = () => {
               <span className="text-white font-bold text-lg">S</span>
             </div>
             <span className="text-2xl font-bold font-poppins bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">
-              SkillSwap
+              BeSkilled
             </span>
           </Link>
           
