@@ -132,6 +132,10 @@ The application follows a modern glassmorphism design with:
 - Professional color scheme
 - Intuitive navigation
 - Mobile-responsive layout
+  <img width="1470" height="956" alt="Homepage" src="https://github.com/user-attachments/assets/83101450-92df-4271-9952-77aa07663724" />
+<img width="1470" height="956" alt="Loginsignup" src="https://github.com/user-attachments/assets/e740d782-0be8-4e70-9eb5-864b158fe645" />
+<img width="1470" height="956" alt="accept" src="https://github.com/user-attachments/assets/2ed60c30-8806-4cf7-9b2a-97100c28fabf" />
+
 
 ## 🏆 Hackathon Highlights
 
