@@ -132,4 +132,91 @@ router.get('/reports', authMiddleware, adminMiddleware, async (req, res) => {
   }
 });
 
+// Download user activity report
+router.get('/reports/user-activity', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT u.id, u.name, u.email, u.location, u.created_at,
+             COUNT(DISTINCT sr1.id) as swaps_sent,
+             COUNT(DISTINCT sr2.id) as swaps_received,
+             COUNT(DISTINCT s.id) as total_skills,
+             COUNT(DISTINCT r.id) as ratings_given
+      FROM users u
+      LEFT JOIN swap_requests sr1 ON u.id = sr1.sender_id
+      LEFT JOIN swap_requests sr2 ON u.id = sr2.receiver_id
+      LEFT JOIN skills s ON u.id = s.user_id
+      LEFT JOIN ratings r ON u.id = r.rated_by
+      GROUP BY u.id, u.name, u.email, u.location, u.created_at
+      ORDER BY u.created_at DESC
+    `);
+    
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=user-activity-report.csv');
+    
+    let csv = 'ID,Name,Email,Location,Joined Date,Swaps Sent,Swaps Received,Total Skills,Ratings Given\n';
+    result.rows.forEach(row => {
+      csv += `${row.id},"${row.name}","${row.email}","${row.location || ''}","${new Date(row.created_at).toLocaleDateString()}",${row.swaps_sent},${row.swaps_received},${row.total_skills},${row.ratings_given}\n`;
+    });
+    
+    res.send(csv);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Download feedback logs report
+router.get('/reports/feedback-logs', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT r.id, r.score, r.comment, r.created_at,
+             rater.name as rater_name, rated.name as rated_user_name,
+             sr.skill_offered, sr.skill_requested
+      FROM ratings r
+      JOIN users rater ON r.rated_by = rater.id
+      JOIN users rated ON r.rated_user = rated.id
+      JOIN swap_requests sr ON r.swap_id = sr.id
+      ORDER BY r.created_at DESC
+    `);
+    
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=feedback-logs-report.csv');
+    
+    let csv = 'Rating ID,Score,Comment,Date,Rater Name,Rated User,Skill Offered,Skill Requested\n';
+    result.rows.forEach(row => {
+      csv += `${row.id},${row.score},"${row.comment || ''}","${new Date(row.created_at).toLocaleDateString()}","${row.rater_name}","${row.rated_user_name}","${row.skill_offered}","${row.skill_requested}"\n`;
+    });
+    
+    res.send(csv);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+// Download swap stats report
+router.get('/reports/swap-stats', authMiddleware, adminMiddleware, async (req, res) => {
+  try {
+    const result = await pool.query(`
+      SELECT sr.id, sr.skill_offered, sr.skill_requested, sr.status, sr.created_at, sr.updated_at,
+             sender.name as sender_name, receiver.name as receiver_name,
+             sender.location as sender_location, receiver.location as receiver_location
+      FROM swap_requests sr
+      JOIN users sender ON sr.sender_id = sender.id
+      JOIN users receiver ON sr.receiver_id = receiver.id
+      ORDER BY sr.created_at DESC
+    `);
+    
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename=swap-stats-report.csv');
+    
+    let csv = 'Swap ID,Skill Offered,Skill Requested,Status,Created Date,Updated Date,Sender Name,Receiver Name,Sender Location,Receiver Location\n';
+    result.rows.forEach(row => {
+      csv += `${row.id},"${row.skill_offered}","${row.skill_requested}","${row.status}","${new Date(row.created_at).toLocaleDateString()}","${new Date(row.updated_at).toLocaleDateString()}","${row.sender_name}","${row.receiver_name}","${row.sender_location || ''}","${row.receiver_location || ''}"\n`;
+    });
+    
+    res.send(csv);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;

@@ -61,6 +61,33 @@ const AdminDashboard = () => {
     }
   };
 
+  const downloadReport = async (reportType, filename) => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await fetch(`/api/admin/reports/${reportType}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        alert('Error downloading report');
+      }
+    } catch (error) {
+      alert('Error downloading report');
+    }
+  };
+
   if (user?.role !== 'admin') {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -110,7 +137,7 @@ const AdminDashboard = () => {
         {/* Tab Navigation */}
         <div className="glass-card rounded-3xl p-2 mb-8">
           <div className="flex space-x-2">
-            {['users', 'swaps', 'messages'].map((tab) => (
+            {['users', 'swaps', 'messages', 'reports'].map((tab) => (
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
@@ -238,6 +265,58 @@ const AdminDashboard = () => {
               <div className="text-4xl mb-4">📢</div>
               <p className="text-secondary font-inter">Platform messaging system ready</p>
               <p className="text-muted text-sm font-inter mt-2">Click "Send Message" to broadcast to all users</p>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'reports' && (
+          <div className="glass-card rounded-3xl p-8">
+            <div className="flex items-center mb-6">
+              <div className="w-12 h-12 bg-gradient-to-r from-green-400 to-teal-500 rounded-2xl flex items-center justify-center mr-4">
+                <span className="text-2xl">📊</span>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-primary font-poppins">Download Reports</h2>
+                <p className="text-secondary text-sm font-inter">Export platform data for analysis</p>
+              </div>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="glass border border-white/10 rounded-2xl p-6 text-center">
+                <div className="text-4xl mb-4">👥</div>
+                <h3 className="text-lg font-semibold text-primary mb-2 font-poppins">User Activity</h3>
+                <p className="text-secondary text-sm mb-4 font-inter">Complete user engagement data</p>
+                <button
+                  onClick={() => downloadReport('user-activity', 'user-activity-report.csv')}
+                  className="btn-primary w-full py-3 px-4 rounded-2xl font-medium font-inter"
+                >
+                  📥 Download CSV
+                </button>
+              </div>
+              
+              <div className="glass border border-white/10 rounded-2xl p-6 text-center">
+                <div className="text-4xl mb-4">💬</div>
+                <h3 className="text-lg font-semibold text-primary mb-2 font-poppins">Feedback Logs</h3>
+                <p className="text-secondary text-sm mb-4 font-inter">All ratings and reviews data</p>
+                <button
+                  onClick={() => downloadReport('feedback-logs', 'feedback-logs-report.csv')}
+                  className="btn-primary w-full py-3 px-4 rounded-2xl font-medium font-inter"
+                >
+                  📥 Download CSV
+                </button>
+              </div>
+              
+              <div className="glass border border-white/10 rounded-2xl p-6 text-center">
+                <div className="text-4xl mb-4">🔄</div>
+                <h3 className="text-lg font-semibold text-primary mb-2 font-poppins">Swap Stats</h3>
+                <p className="text-secondary text-sm mb-4 font-inter">Complete swap request analytics</p>
+                <button
+                  onClick={() => downloadReport('swap-stats', 'swap-stats-report.csv')}
+                  className="btn-primary w-full py-3 px-4 rounded-2xl font-medium font-inter"
+                >
+                  📥 Download CSV
+                </button>
+              </div>
             </div>
           </div>
         )}
