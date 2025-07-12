@@ -65,6 +65,12 @@ const Navbar = () => {
                   🔄 Swaps
                 </Link>
                 <Link 
+                  to="/ratings" 
+                  className="text-secondary hover:text-primary transition-all duration-300 font-medium hover:scale-105 px-3 py-2 rounded-xl"
+                >
+                  ⭐ Ratings
+                </Link>
+                <Link 
                   to="/profile" 
                   className="text-secondary hover:text-primary transition-all duration-300 font-medium hover:scale-105 px-3 py-2 rounded-xl"
                 >
