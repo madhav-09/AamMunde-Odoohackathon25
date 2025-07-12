@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/AamMunde-Odoohackathon25/static/css/main.27d6c8c5.css",
+    "main.js": "/AamMunde-Odoohackathon25/static/js/main.8f2a31da.js",
+    "index.html": "/AamMunde-Odoohackathon25/index.html",
+    "main.27d6c8c5.css.map": "/AamMunde-Odoohackathon25/static/css/main.27d6c8c5.css.map",
+    "main.8f2a31da.js.map": "/AamMunde-Odoohackathon25/static/js/main.8f2a31da.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.27d6c8c5.css",
+    "static/js/main.8f2a31da.js"
+  ]
+}
