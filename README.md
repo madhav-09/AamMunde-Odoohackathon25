@@ -7,6 +7,18 @@
 
 A modern web application where users can exchange skills and knowledge with each other. Built for Odoo Hackathon 2025.
 
+---
+
+## 👥 Team Members
+
+| Name              | Email                           |
+|-------------------|---------------------------------|
+| Madhav Tiwari     | tiwarimadhav2309@gmail.com      |
+| Rahul Patel       | onlinerahulpatel@gmail.com      |
+| Oad Harsh Kanubhai| harshoad7205@gmail.com          |
+
+---
+
 ## 🌟 Features
 
 ### ✅ Complete User System
